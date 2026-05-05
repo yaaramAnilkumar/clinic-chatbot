@@ -386,29 +386,29 @@ if user_input := st.chat_input("Type your question here..."):
     with st.chat_message("user"):
         st.markdown(user_input)
 
-# Get Claude response
-with st.chat_message("assistant"):
-    with st.spinner("Typing..."):
-        # Filter - only send user & assistant messages after first user message
-        api_messages = [
-            {"role": m["role"], "content": m["content"]}
-            for m in st.session_state.messages
-            if not (m["role"] == "assistant" and m == st.session_state.messages[0])
-        ]
+    with st.chat_message("assistant"):
+        with st.spinner("Typing..."):
 
-        response = get_response(api_messages, system_prompt)
-        st.markdown(response)
+            # ── Only send user/assistant messages, skip first greeting ──
+            api_messages = []
+            for m in st.session_state.messages:
+                if m["role"] == "user":
+                    api_messages.append({"role": "user", "content": m["content"]})
+                elif m["role"] == "assistant" and len(api_messages) > 0:
+                    api_messages.append({"role": "assistant", "content": m["content"]})
 
-# Save to database
-try:
-    from database import save_message
-    save_message("webchat", "user", user_input, "webchat")
-    save_message("webchat", "assistant", response, "webchat")
-except Exception as e:
-    print(f"DB save error: {e}")
+            response = get_response(api_messages, system_prompt)
+            st.markdown(response)
 
-# Save response
-st.session_state.messages.append({
-    "role": "assistant",
-    "content": response
-})
+    # Save to database
+    try:
+        from database import save_message
+        save_message("webchat", "user", user_input, "webchat")
+        save_message("webchat", "assistant", response, "webchat")
+    except Exception as e:
+        print(f"DB save error: {e}")
+
+    st.session_state.messages.append({
+        "role": "assistant",
+        "content": response
+    })
