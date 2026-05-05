@@ -1,4 +1,5 @@
 import streamlit as st
+from datetime import datetime
 from chatbot import get_response
 from clinic_data import clinic_info
 from pdf_processor import extract_text_from_pdf, build_system_prompt
@@ -310,7 +311,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
     st.session_state.messages.append({
         "role": "assistant",
-        "content": "👋 **Hello! Welcome to Bengaluru Health Clinic.**\n\nI'm your AI-powered assistant, here to help you 24/7. You can ask me about:\n\n- 🕐 **Clinic timings** & holidays\n- 👨‍⚕️ **Doctors** & their availability\n- 💰 **Fees** & payment options\n- 📅 **Booking** an appointment\n- 🧪 **Lab tests** & reports\n- 🏥 **Insurance** we accept\n\n📄 You can also **upload a clinic PDF** from the sidebar!\n\nHow can I help you today?"
+        "content": f"👋 **Hello! Welcome to Bengaluru Health Clinic.**\n\nToday is **{datetime.now().strftime('%A, %d %B %Y')}**\n\nI'm your AI-powered assistant, here to help you 24/7. You can ask me about:\n\n- 🕐 **Clinic timings** & holidays\n- 👨‍⚕️ **Doctors** & their availability\n- 💰 **Fees** & payment options\n- 🗓️ **Booking** an appointment\n- 🧪 **Lab tests** & reports\n- 🏥 **Insurance** we accept\n\n📄 You can also **upload a clinic PDF** from the sidebar!\n\nHow can I help you today?"
     })
 
 if "pdf_text" not in st.session_state:
