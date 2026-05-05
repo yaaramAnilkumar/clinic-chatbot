@@ -385,16 +385,26 @@ if user_input := st.chat_input("Type your question here..."):
     with st.chat_message("user"):
         st.markdown(user_input)
 
-    with st.chat_message("assistant"):
-        with st.spinner("Typing..."):
-            api_messages = [
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ]
-            response = get_response(api_messages, system_prompt)
-            st.markdown(response)
+# Get Claude response
+with st.chat_message("assistant"):
+    with st.spinner("Typing..."):
+        api_messages = [
+            {"role": m["role"], "content": m["content"]}
+            for m in st.session_state.messages
+        ]
+        response = get_response(api_messages, system_prompt)
+        st.markdown(response)
 
-    st.session_state.messages.append({
-        "role": "assistant",
-        "content": response
-    })
+# Save to database
+try:
+    from database import save_message
+    save_message("webchat", "user", user_input, "webchat")
+    save_message("webchat", "assistant", response, "webchat")
+except Exception as e:
+    print(f"DB save error: {e}")
+
+# Save response
+st.session_state.messages.append({
+    "role": "assistant",
+    "content": response
+})
