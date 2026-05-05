@@ -389,10 +389,13 @@ if user_input := st.chat_input("Type your question here..."):
 # Get Claude response
 with st.chat_message("assistant"):
     with st.spinner("Typing..."):
+        # Filter - only send user & assistant messages after first user message
         api_messages = [
             {"role": m["role"], "content": m["content"]}
             for m in st.session_state.messages
+            if not (m["role"] == "assistant" and m == st.session_state.messages[0])
         ]
+
         response = get_response(api_messages, system_prompt)
         st.markdown(response)
 
