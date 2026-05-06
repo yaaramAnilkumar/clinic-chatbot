@@ -1,5 +1,5 @@
 (function () {
-  const CHAT_API = "http://127.0.0.1:8001"; // Change to Railway URL in production
+  const CHAT_API = "https://web-production-6c14e.up.railway.app"; // Change to Railway URL in production
   const SESSION_ID = "session_" + Math.random().toString(36).substr(2, 9);
 
   // ── Inject Google Fonts ──────────────────────────────────
